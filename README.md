@@ -13,9 +13,15 @@ zip function.zip main
 
 ##Create function
 ####建立函數
-aws lambda create-function --function-name hello-dynamo \
---zip-file fileb://function.zip --handler main --runtime go1.x \
---role arn:aws:iam::990204874157:role/lambda-ex
+```bash
+aws lambda create-function --function-name hello-dynamo --zip-file fileb://function.zip --handler main --runtime go1.x --role arn:aws:iam::990204874157:role/lambda-ex
+```
+
+####更新函數
+```bash
+ aws lambda update-function-code --function-name  kinesis-consumer  --zip-file fileb://function.zip
+```
+
 
 ###lambda role
 "Arn": "arn:aws:iam::990204874157:role/lambda-ex",
