@@ -5,6 +5,7 @@ import (
 	"github.com/google/uuid"
 	"time"
 )
+
 const TABLE_NAME = "mytable"
 
 type MyTable struct {
@@ -29,14 +30,37 @@ func (e *Event) getSK() string {
 	return fmt.Sprintf("Timestamp#%s#UUID#%s", timestamp, uuidstr)
 }
 
-type Response struct{
-	Event  *Event `json:"event"`
-}
-
 func NewEvent(clientid string, msg string) *Event {
 	e := &Event{}
 	e.PK = e.getPK(clientid)
 	e.SK = e.getSK()
 	e.Msg = msg
+	return e
+}
+
+type ErrorLog struct {
+	MyTable
+	Error string
+}
+
+func (e *ErrorLog) getPK() string {
+	return fmt.Sprintf("ErrorLog")
+}
+
+func (e *ErrorLog) getSK(timestamp int, uuidstr string) string {
+	return fmt.Sprintf("Timestamp#%dUUID#%s", timestamp, uuidstr)
+}
+
+type NewErrorLogInput struct {
+	Timestamp int
+	UUID      string
+	Error     string
+}
+
+func NewErrorLog(input *NewErrorLogInput) *ErrorLog {
+	e := &ErrorLog{}
+	e.PK = e.getPK()
+	e.SK = e.getSK(input.Timestamp, input.UUID)
+	e.Error = input.Error
 	return e
 }
