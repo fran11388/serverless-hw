@@ -3,7 +3,6 @@ package main
 import (
 	"context"
 	"encoding/json"
-	"errors"
 	"fmt"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -17,22 +16,7 @@ import (
 	"log"
 )
 
-type ClientEvent struct{
-	ClientId *string `json:"client_id"`
-	Msg *string `json:"msg"`
-	IssueError bool `json:"issue_error"`
-}
 
-func (c *ClientEvent)Validate()error{
-	if c.ClientId==nil{
-		return errors.New("client_id missing")
-	}
-	if c.Msg==nil{
-		return errors.New("msg missing")
-	}
-
-	return nil
-}
 
 const SQS_Error_Queue_Name="consumer-error-queue"
 var dynamodbClient *dynamodb.Client
@@ -72,7 +56,7 @@ func HandleLambdaEvent(ctx context.Context, kinesisEvent events.KinesisEvent) er
 		dataText := string(dataBytes)
 		fmt.Printf("%s Data = %s \n", record.EventName, dataText)
 
-		clientevent:=&ClientEvent{}
+		clientevent:=&model.ClientEvent{}
 		err := json.Unmarshal(dataBytes, clientevent)
 		if err != nil {
 			sendToSQS(clientevent,err.Error())
@@ -114,12 +98,9 @@ func HandleLambdaEvent(ctx context.Context, kinesisEvent events.KinesisEvent) er
 	return nil
 }
 
-type SQSMsgBody struct{
-	ClientEvent *ClientEvent `json:"client_event"`
-	Error string `json:"error"`
-}
-func sendToSQS(ce *ClientEvent,errReason string){
-	msgbody:=&SQSMsgBody{
+
+func sendToSQS(ce *model.ClientEvent,errReason string){
+	msgbody:=&model.SQSErrorMsgBody{
 		ClientEvent: ce,
 		Error: errReason,
 	}

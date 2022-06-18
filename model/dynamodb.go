@@ -44,26 +44,29 @@ func NewEvent(input *NewEventInput) *Event {
 type ErrorLog struct {
 	MyTable
 	Error string
+	*ClientEvent
 }
 
 func (e *ErrorLog) getPK() string {
 	return fmt.Sprintf("ErrorLog")
 }
 
-func (e *ErrorLog) getSK(timestamp int, uuidstr string) string {
-	return fmt.Sprintf("Timestamp#%dUUID#%s", timestamp, uuidstr)
+func (e *ErrorLog) getSK(timestamp string, SN string) string {
+	return fmt.Sprintf("Timestamp#%s#SN#%s", timestamp, SN)
 }
 
 type NewErrorLogInput struct {
-	Timestamp int
-	UUID      string
+	Timestamp string
+	SN      string
 	Error     string
+	ClientEvent *ClientEvent
 }
 
 func NewErrorLog(input *NewErrorLogInput) *ErrorLog {
 	e := &ErrorLog{}
 	e.PK = e.getPK()
-	e.SK = e.getSK(input.Timestamp, input.UUID)
+	e.SK = e.getSK(input.Timestamp, input.SN)
 	e.Error = input.Error
+	e.ClientEvent=input.ClientEvent
 	return e
 }
