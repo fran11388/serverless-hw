@@ -3,6 +3,7 @@ package main
 import (
 	"context"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"github.com/aws/aws-lambda-go/events"
 	"github.com/aws/aws-lambda-go/lambda"
@@ -17,8 +18,20 @@ import (
 )
 
 type ClientEvent struct{
-	ClientId string `json:"client_id"`
-	Msg string `json:"msg"`
+	ClientId *string `json:"client_id"`
+	Msg *string `json:"msg"`
+	IssueError bool `json:"issue_error"`
+}
+
+func (c *ClientEvent)Validate()error{
+	if c.ClientId==nil{
+		return errors.New("client_id missing")
+	}
+	if c.Msg==nil{
+		return errors.New("msg missing")
+	}
+
+	return nil
 }
 
 const SQS_Error_Queue_Name="consumer-error-queue"
@@ -58,7 +71,7 @@ func HandleLambdaEvent(ctx context.Context, kinesisEvent events.KinesisEvent) er
 		dataBytes := kinesisRecord.Data
 		dataText := string(dataBytes)
 		fmt.Printf("%s Data = %s \n", record.EventName, dataText)
-
+		
 		clientevent:=&ClientEvent{}
 		err := json.Unmarshal(dataBytes, clientevent)
 		if err != nil {
@@ -66,9 +79,19 @@ func HandleLambdaEvent(ctx context.Context, kinesisEvent events.KinesisEvent) er
 			continue
 		}
 
+		err = clientevent.Validate()
+		if err != nil {
+			sendToSQS(clientevent,err.Error())
+			continue
+		}
+		if clientevent.IssueError{//client simulate cause error
+			sendToSQS(clientevent,"client issue error")
+			continue
+		}
+
 		eventdoc:=model.NewEvent(&model.NewEventInput{
-			ClientId: clientevent.ClientId,
-			Msg: clientevent.Msg,
+			ClientId: *clientevent.ClientId,
+			Msg: *clientevent.Msg,
 			Timestamp: record.Kinesis.ApproximateArrivalTimestamp.Time,
 			SN: record.Kinesis.SequenceNumber,
 		})
