@@ -4,6 +4,7 @@ import (
 	"context"
 	"github.com/aws/aws-lambda-go/events"
 	"testing"
+	"time"
 )
 
 func TestHandleLambdaEvent(t *testing.T) {
@@ -17,6 +18,8 @@ func TestHandleLambdaEvent(t *testing.T) {
 			events.KinesisEventRecord{
 				Kinesis:events.KinesisRecord{
 					Data:[]byte("{\n    \"client_id\": \"client123\",\n    \"msg\": \"from golang ide some thing happen lol\"\n  }"),
+					ApproximateArrivalTimestamp: events.SecondsEpochTime{time.Now()},
+					SequenceNumber: "SequenceNumber12345",
 				},
 		}},
 	}

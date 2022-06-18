@@ -66,12 +66,18 @@ func HandleLambdaEvent(ctx context.Context, kinesisEvent events.KinesisEvent) er
 			continue
 		}
 
-		eventdoc:=model.NewEvent(clientevent.ClientId,clientevent.Msg)
+		eventdoc:=model.NewEvent(&model.NewEventInput{
+			ClientId: clientevent.ClientId,
+			Msg: clientevent.Msg,
+			Timestamp: record.Kinesis.ApproximateArrivalTimestamp.Time,
+			SN: record.Kinesis.SequenceNumber,
+		})
 		item, err := attributevalue.MarshalMap(eventdoc)
 		if err != nil {
 			sendToSQS(clientevent,err.Error())
 			continue
 		}
+		//idempotent operation
 		_, err = dynamodbClient.PutItem(context.TODO(), &dynamodb.PutItemInput{
 			TableName: aws.String(model.TABLE_NAME), Item: item,
 		})
