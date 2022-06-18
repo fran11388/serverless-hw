@@ -71,7 +71,7 @@ func HandleLambdaEvent(ctx context.Context, kinesisEvent events.KinesisEvent) er
 		dataBytes := kinesisRecord.Data
 		dataText := string(dataBytes)
 		fmt.Printf("%s Data = %s \n", record.EventName, dataText)
-		
+
 		clientevent:=&ClientEvent{}
 		err := json.Unmarshal(dataBytes, clientevent)
 		if err != nil {
@@ -136,7 +136,7 @@ func sendToSQS(ce *ClientEvent,errReason string){
 
 	_, err = sqsutils.SendMsg(context.TODO(), sqsClient, sMInput)
 	if err != nil {
-		fmt.Println("Got an error sending the message:")
+		fmt.Println("Got an error sending the sqs message:")
 		fmt.Println(err)
 		return
 	}
