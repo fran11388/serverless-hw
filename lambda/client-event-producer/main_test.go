@@ -17,8 +17,8 @@ func TestHandleLambdaEvent(t *testing.T) {
 		fmt.Println(err)
 		return
 	}
-	clientid:="local_test_client"
-	eventCount:=2
+	clientid:="local_test_client1"
+	eventCount:=5
 	tests := []struct {
 		name    string
 		args    args
