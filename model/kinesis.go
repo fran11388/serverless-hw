@@ -18,3 +18,4 @@ func (c *ClientEvent)Validate()error{
 
 	return nil
 }
+
