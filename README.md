@@ -45,6 +45,20 @@ aws iam attach-role-policy --role-name lambda-ex --policy-arn arn:aws:iam::aws:p
 # Service architecture
 ![service.png](docs/service.png) 
 
+# DynamoDB primary key design
+### Client event
+> Partition key: Event#CliendId#{CliendId}
+
+> Sort key: Timestamp#{Timestamp}#SN#{SN}
+
+### Error log
+> Partition key: ErrorLog
+
+> Sort key: Timestamp#{Timestamp}#SN#{SN}
+
+### Reference
+[Choosing the Right DynamoDB Partition Key](https://aws.amazon.com/tw/blogs/database/choosing-the-right-dynamodb-partition-key/)
+
 # Error encountered
 > IAM role permission missing cause: AWS.SimpleQueueService.NonExistentQueue
 
