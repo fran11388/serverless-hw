@@ -1,4 +1,4 @@
-## Build lambda
+# Build lambda
 
 #### Compile your executable.
 ```bash
@@ -11,7 +11,7 @@ zip function.zip main
 ### Reference
 [Deploy .zip file archives](https://docs.aws.amazon.com/lambda/latest/dg/golang-package.html)
 
-## Lambda function CLI
+# Lambda function CLI
 ### Create function
 ```bash
 aws lambda create-function --function-name hello-dynamo --zip-file fileb://function.zip --handler main --runtime go1.x --role arn:aws:iam::990204874157:role/lambda-ex
@@ -27,8 +27,7 @@ aws lambda create-event-source-mapping --function-name sqs-error-consumer  --bat
  aws lambda update-function-code --function-name  kinesis-consumer  --zip-file fileb://function.zip
 ```
 
-
-## Managing roles with the IAM API
+# Managing roles with the IAM API
 
 ### Lambda role
 "Arn": "arn:aws:iam::990204874157:role/lambda-ex",
@@ -43,10 +42,10 @@ aws iam create-role --role-name lambda-ex --assume-role-policy-document '{"Versi
 aws iam attach-role-policy --role-name lambda-ex --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
 ```
 
-## Service architecture
+# Service architecture
 ![service.png](docs/service.png) 
 
-## Error encountered
+# Error encountered
 > IAM role permission missing cause: AWS.SimpleQueueService.NonExistentQueue
 
 > socket: too many open files: Error
@@ -54,5 +53,3 @@ aws iam attach-role-policy --role-name lambda-ex --policy-arn arn:aws:iam::aws:p
 > operation error DynamoDB: PutItem, exceeded maximum number of attempts, 3, https response error StatusCode: 400
 
 > ProvisionedThroughputExceededException: The level of configured provisioned throughput for the table was exceeded.
-
-
