@@ -11,7 +11,7 @@ zip function.zip main
 ### Reference
 [Deploy .zip file archives](https://docs.aws.amazon.com/lambda/latest/dg/golang-package.html)
 
-## Lambda function
+## Lambda function CLI
 ### Create function
 ```bash
 aws lambda create-function --function-name hello-dynamo --zip-file fileb://function.zip --handler main --runtime go1.x --role arn:aws:iam::990204874157:role/lambda-ex
@@ -42,4 +42,17 @@ aws iam create-role --role-name lambda-ex --assume-role-policy-document '{"Versi
 ```bash
 aws iam attach-role-policy --role-name lambda-ex --policy-arn arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole
 ```
+
+## Service architecture
+![service.png](docs/service.png) 
+
+## Error encountered
+> IAM role permission missing cause: AWS.SimpleQueueService.NonExistentQueue
+
+> socket: too many open files: Error
+
+> operation error DynamoDB: PutItem, exceeded maximum number of attempts, 3, https response error StatusCode: 400
+
+> ProvisionedThroughputExceededException: The level of configured provisioned throughput for the table was exceeded.
+
 
